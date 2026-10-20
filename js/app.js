@@ -21,6 +21,7 @@ console.log(films);
 
 const filmsContainer = document.getElementById("films-container");
 const prixTotal = document.getElementById("prix-total")
+const voterFilmSelectione = document.getElementById("voter-film-selectione")
 
 // ==================================================
 // 0 BIS - MÉMORISER L'ÉTAT DE L'APPLICATION
@@ -67,7 +68,7 @@ const createCartFilm = () => {
                 <p class="text-xs font-bold uppercase tracking-wider text-cine-red">${film.genre}</p>
                 <h3 class="mt-1 text-lg font-black">${film.titre}</h3>
                 <p class="mt-2 text-sm text-slate-500">${formateTime(film.duree)}</p>
-                <button type="button" class="btn-select mt-4 w-full rounded-xl bg-cine-red px-4 py-3 font-extrabold text-white">Choisir ce Film</button>
+                <button type="submit" data-clicked="0" data-film-id="${film.id}"  class="btn-select mt-4 w-full rounded-xl px-4 py-3 font-extrabold text-white bg-cine-red">Choisir ce Film</button>
               </div>
             </article>
         `
@@ -89,6 +90,25 @@ createCartFilm()
 // MODÈLE : #film-details contient déjà un exemple de détail à reproduire.
 // ÉCRIVEZ VOTRE CODE ICI :
 
+document.querySelectorAll(".btn-select").forEach((ele) => {
+    ele.addEventListener("click", (e) => {
+        e.preventDefault()
+        changeButton(e.target)
+    })
+})
+
+const changeButton = (button) => {
+    if (button.dataset.clicked == 1) {
+        button.classList = "btn-select mt-4 w-full rounded-xl px-4 py-3 font-extrabold text-white bg-cine-red";
+        button.dataset.clicked = "0"
+        button.innerHTML = "Coisir ce film"
+    } else {
+        button.classList = "btn-select mt-4 w-full rounded-xl px-4 py-3 font-extrabold text-black bg-cine-gray border-2 border-black";
+        button.dataset.clicked = "1"
+        button.innerHTML = "film selectione"
+    }
+    console.log(films.find((ele) => ele.id == button.dataset.filmId));
+}
 
 // ==================================================
 // US03 - AFFICHER LES SÉANCES
