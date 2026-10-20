@@ -1,7 +1,6 @@
 "use strict";
 
 import { films } from "./data.js";
-console.log(films);
 
 // Bienvenue dans le fichier de travail principal de CineBook !
 // Le HTML et les données sont prêts, mais les interactions sont volontairement absentes.
@@ -22,6 +21,8 @@ console.log(films);
 const filmsContainer = document.getElementById("films-container");
 const voterFilmSelectione = document.getElementById("film-selectioner")
 const prixTotal = document.getElementById("prix-total")
+const seancesContainer = document.getElementById("seances-container")
+const affichageCartFilm = document.getElementById("affichage-comande-film")
 
 // ==================================================
 // 0 BIS - MÉMORISER L'ÉTAT DE L'APPLICATION
@@ -32,6 +33,10 @@ const prixTotal = document.getElementById("prix-total")
 // PISTES : que faut-il remettre à zéro lorsqu'un autre film est choisi ?
 // TODO : déclarez trois variables avec des valeurs initiales adaptées.
 // ÉCRIVEZ VOTRE CODE ICI :
+
+let SelectioneSeance = []
+let filmSelectiones = []
+
 
 
 // ==================================================
@@ -68,7 +73,7 @@ const createCartFilm = () => {
                 <p class="text-xs font-bold uppercase tracking-wider text-cine-red">${film.genre}</p>
                 <h3 class="mt-1 text-lg font-black">${film.titre}</h3>
                 <p class="mt-2 text-sm text-slate-500">${formateTime(film.duree)}</p>
-                <button type="submit" data-clicked="0" data-film-id="${film.id}"  class="btn-select mt-4 w-full rounded-xl px-4 py-3 font-extrabold text-white bg-cine-red">Choisir ce Film</button>
+                <button type="submit" data-clicked="0" data-film-id="${film.id}"  class="btn-select mt-4 w-full rounded-xl px-4 py-3 font-extrabold text-black bg-cine-gray border-2 border-black">Choisir ce Film</button>
               </div>
             </article>
         `
@@ -100,12 +105,12 @@ document.querySelectorAll(".btn-select").forEach((ele) => {
 const changeButton = (button) => {
     const film = films.find((ele) => ele.id == button.dataset.filmId);
     if (button.dataset.clicked == 1) {
-        button.classList = "btn-select mt-4 w-full rounded-xl px-4 py-3 font-extrabold text-white bg-cine-red";
+        button.classList = "btn-select mt-4 w-full rounded-xl px-4 py-3 font-extrabold text-black bg-cine-gray border-2 border-black";
         button.dataset.clicked = "0"
         button.innerHTML = "Coisir ce film"
         RemoveFilmSelection(film)
     } else {
-        button.classList = "btn-select mt-4 w-full rounded-xl px-4 py-3 font-extrabold text-black bg-cine-gray border-2 border-black";
+        button.classList = "btn-select mt-4 w-full rounded-xl px-4 py-3 font-extrabold text-white bg-cine-red";
         button.dataset.clicked = "1"
         button.innerHTML = "film selectione"
         AjouteFilmSelection(film)
@@ -123,20 +128,25 @@ const changeButton = (button) => {
 // ÉCRIVEZ VOTRE CODE ICI :
 
 
-let filmSelectiones = []
-
 const AjouteFilmSelection = (film) => {
     filmSelectiones.push(film)
+    SelectioneSeance.push({ filmId: film.id, data: film.seances })
     AffichageFilmsSelection()
+    AffichageSeance()
+    afficheCart()
+    CalculPrixTotal()
 }
 
 const RemoveFilmSelection = (film) => {
     filmSelectiones = filmSelectiones.filter((f) => f.id != film.id)
+    SelectioneSeance = SelectioneSeance.filter((f) => f.filmId != film.id)
     AffichageFilmsSelection()
+    afficheCart()
+    CalculPrixTotal()
+    AffichageSeance()
 }
 
 const AffichageFilmsSelection = () => {
-    console.log(filmSelectiones);
     if (filmSelectiones.length > 0) {
         voterFilmSelectione.innerHTML = ``
         filmSelectiones.forEach((film) => {
@@ -160,6 +170,31 @@ const AffichageFilmsSelection = () => {
     }
 }
 
+const AffichageSeance = () => {
+    if (SelectioneSeance.length > 0) {
+        console.log(SelectioneSeance);
+        seancesContainer.innerHTML = ``
+        SelectioneSeance.forEach((seance) => {
+
+            const div = document.createElement("div")
+            const h3 = document.createElement("h3")
+            div.classList = "border-b border-gray-300 w-full pb-3 flex justify-around items-center"
+            h3.innerHTML = `Film :=> ${seance.filmId}`
+
+            seance.data.forEach((s) => {
+                div.innerHTML += `
+                    <button type="button" data-seance-id="${s.id}" class="rounded-xl border border-slate-300 bg-slate-50 px-5 py-3 font-bold text-slate-700 btn-selection-seance">${s.horaire}</button>
+                `
+            })
+
+            seancesContainer.appendChild(h3)
+            seancesContainer.appendChild(div)
+        })
+    } else {
+        seancesContainer.innerHTML = ``
+    }
+}
+
 // ==================================================
 // US04 - SÉLECTIONNER UNE SÉANCE
 // ==================================================
@@ -168,6 +203,14 @@ const AffichageFilmsSelection = () => {
 // QUESTIONS : Faut-il autoriser une séance qui n'appartient pas au film choisi ?
 // TODO : retrouver la séance, modifier l'état et réinitialiser les sièges choisis.
 // ÉCRIVEZ VOTRE CODE ICI :
+
+
+// document.querySelectorAll("button .btn-selection-seance").forEach((ele) => {
+//     ele.addEventListener("click", (e) => {
+//         e.preventDefault()
+//         console.log(e);
+//     })
+// })
 
 
 // ==================================================
@@ -202,6 +245,36 @@ const AffichageFilmsSelection = () => {
 // MODÈLE : le récapitulatif HTML affiche des exemples de valeurs déjà remplies.
 // ÉCRIVEZ VOTRE CODE ICI :
 
+const afficheCart = () => {
+    // affichageCartFilm.innerHTML += ``
+    filmSelectiones.forEach((film) => {
+        // affichageCartFilm.innerHTML += `
+        // <dl class="mt-7 space-y-4 text-sm py-2 border-black border-b">
+        //     <div class="flex justify-between gap-4">
+        //         <dt class="text-slate-500">Film</dt>
+        //         <dd id="recap-film" class="font-bold">${film.titre}</dd>
+        //     </div>
+        //     <div class="flex justify-between gap-4">
+        //         <dt class="text-slate-500">Séance</dt>
+        //         <dd id="recap-seance" class="font-bold">14:00</dd>
+        //     </div>
+        //     <div class="flex justify-between gap-4">
+        //         <dt class="text-slate-500">Nombre de sièges</dt>
+        //         <dd id="nombre-sieges" class="font-bold">2</dd>
+        //     </div>
+        //     <div class="flex justify-between gap-4">
+        //         <dt class="text-slate-500">Sièges</dt>
+        //         <dd id="sieges-selectionnes" class="font-bold">C2, C3</dd>
+        //     </div>
+        // </dl>
+        // `
+    })
+}
+
+const CalculPrixTotal = () => {
+    prixTotal.innerHTML = filmSelectiones.reduce((acc, cur) => acc + cur.prix, 0)
+}
+
 
 // ==================================================
 // US08 - CONFIRMER LA RÉSERVATION
@@ -213,6 +286,11 @@ const AffichageFilmsSelection = () => {
 // TODO : écouter #confirmer-reservation et construire un message clair.
 // ÉCRIVEZ VOTRE CODE ICI :
 
+
+document.getElementById("confirmer-reservation").addEventListener("click", (e) => {
+    e.preventDefault()
+    console.log("reservation");
+})
 
 // PREMIER TEST CONSEILLÉ :
 // console.log(films);
