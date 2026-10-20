@@ -1,5 +1,8 @@
 "use strict";
 
+import { films } from "./data.js";
+console.log(films);
+
 // Bienvenue dans le fichier de travail principal de CineBook !
 // Le HTML et les données sont prêts, mais les interactions sont volontairement absentes.
 // La page contient déjà un exemple statique complet pour montrer le résultat attendu.
@@ -16,6 +19,8 @@
 // TODO : créez ici des constantes explicites pour les éléments nécessaires.
 // ÉCRIVEZ VOTRE CODE ICI :
 
+const filmsContainer = document.getElementById("films-container");
+const prixTotal = document.getElementById("prix-total")
 
 // ==================================================
 // 0 BIS - MÉMORISER L'ÉTAT DE L'APPLICATION
@@ -40,6 +45,37 @@
 // MODÈLE : observez l'élément <article data-film-id="1"> dans index.html.
 // ÉCRIVEZ VOTRE CODE ICI :
 
+const formateTime = (duree) => {
+    const hour = duree / 60
+    const minute = duree % 60
+    return minute === 0
+        ? `${hour.toFixed(0)} h`
+        : `${hour.toFixed(0)} h ${minute} minute`
+
+}
+
+const createCartFilm = () => {
+    films.forEach((film) => {
+        const cart = `
+                <article data-id="${film.id}" class="overflow-hidden rounded-2xl border border-red-400 bg-white shadow-xl ring-2 ring-red-100"
+              data-film-id="1">
+              <div class="relative"><img src="${film.affiche}" alt="Affiche de Mission Galaxie"
+                  class="aspect-[2/3] w-full object-cover"><span
+                  class="absolute bottom-3 right-3 rounded-full bg-white/95 px-3 py-1 text-xs font-extrabold shadow-lg">${film.prix}
+                  DH</span></div>
+              <div class="p-4">
+                <p class="text-xs font-bold uppercase tracking-wider text-cine-red">${film.genre}</p>
+                <h3 class="mt-1 text-lg font-black">${film.titre}</h3>
+                <p class="mt-2 text-sm text-slate-500">${formateTime(film.duree)}</p>
+                <button type="button" class="btn-select mt-4 w-full rounded-xl bg-cine-red px-4 py-3 font-extrabold text-white">Choisir ce Film</button>
+              </div>
+            </article>
+        `
+        filmsContainer.innerHTML += cart
+    })
+}
+
+createCartFilm()
 
 // ==================================================
 // US02 - SÉLECTIONNER UN FILM

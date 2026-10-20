@@ -5,7 +5,7 @@
 // Il est chargé avant app.js : la variable "films" y est donc disponible.
 // Chaque séance possède sa propre liste de sièges déjà occupés.
 
-const films = [
+export const films = [
   {
     id: 1,
     titre: "Mission Galaxie",
@@ -64,5 +64,5 @@ const films = [
 ];
 
 // La salle compte 5 rangées (A à E) de 6 sièges : 30 places.
-const rangees = ["A", "B", "C", "D", "E"];
-const siegesParRangee = 6;
+export const rangees = ["A", "B", "C", "D", "E"];
+export const siegesParRangee = 6;
