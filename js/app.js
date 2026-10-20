@@ -59,7 +59,7 @@ const createCartFilm = () => {
         const cart = `
                 <article data-id="${film.id}" class="overflow-hidden rounded-2xl border border-red-400 bg-white shadow-xl ring-2 ring-red-100"
               data-film-id="1">
-              <div class="relative"><img src="${film.affiche}" alt="Affiche de Mission Galaxie"
+              <div class="relative"><img src="${film.affiche}" alt="${film.genre}-${film.titre}"
                   class="aspect-[2/3] w-full object-cover"><span
                   class="absolute bottom-3 right-3 rounded-full bg-white/95 px-3 py-1 text-xs font-extrabold shadow-lg">${film.prix}
                   DH</span></div>
