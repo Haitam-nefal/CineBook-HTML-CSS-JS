@@ -20,8 +20,8 @@ console.log(films);
 // ÉCRIVEZ VOTRE CODE ICI :
 
 const filmsContainer = document.getElementById("films-container");
+const voterFilmSelectione = document.getElementById("film-selectioner")
 const prixTotal = document.getElementById("prix-total")
-const voterFilmSelectione = document.getElementById("voter-film-selectione")
 
 // ==================================================
 // 0 BIS - MÉMORISER L'ÉTAT DE L'APPLICATION
@@ -98,16 +98,18 @@ document.querySelectorAll(".btn-select").forEach((ele) => {
 })
 
 const changeButton = (button) => {
+    const film = films.find((ele) => ele.id == button.dataset.filmId);
     if (button.dataset.clicked == 1) {
         button.classList = "btn-select mt-4 w-full rounded-xl px-4 py-3 font-extrabold text-white bg-cine-red";
         button.dataset.clicked = "0"
         button.innerHTML = "Coisir ce film"
+        RemoveFilmSelection(film)
     } else {
         button.classList = "btn-select mt-4 w-full rounded-xl px-4 py-3 font-extrabold text-black bg-cine-gray border-2 border-black";
         button.dataset.clicked = "1"
         button.innerHTML = "film selectione"
+        AjouteFilmSelection(film)
     }
-    console.log(films.find((ele) => ele.id == button.dataset.filmId));
 }
 
 // ==================================================
@@ -120,6 +122,43 @@ const changeButton = (button) => {
 // MODÈLE : les trois boutons statiques de #seances-container montrent le HTML attendu.
 // ÉCRIVEZ VOTRE CODE ICI :
 
+
+let filmSelectiones = []
+
+const AjouteFilmSelection = (film) => {
+    filmSelectiones.push(film)
+    AffichageFilmsSelection()
+}
+
+const RemoveFilmSelection = (film) => {
+    filmSelectiones = filmSelectiones.filter((f) => f.id != film.id)
+    AffichageFilmsSelection()
+}
+
+const AffichageFilmsSelection = () => {
+    console.log(filmSelectiones);
+    if (filmSelectiones.length > 0) {
+        voterFilmSelectione.innerHTML = ``
+        filmSelectiones.forEach((film) => {
+            voterFilmSelectione.innerHTML += `
+                <div id="film-details" class="mt-6 grid gap-5 rounded-2xl bg-slate-50 p-5 sm:grid-cols-[100px_1fr]">
+                  <img src="${film.affiche}" alt="${film.genre}-${film.titre}"
+                    class="aspect-[2/3] w-24 rounded-xl object-cover shadow-md">
+                  <div>
+                    <div class="flex flex-wrap items-center gap-2">
+                      <h3 class="text-xl font-black">${film.titre}</h3><span
+                        class="rounded-full bg-red-100 px-3 py-1 text-xs font-bold text-red-700">${film.prix} DH</span>
+                    </div>
+                    <p class="mt-2 text-sm font-semibold text-slate-500">${film.genre} · ${formateTime(film.duree)}</p>
+                    <p class="mt-3 leading-7 text-slate-600">${film.description}</p>
+                  </div>
+                </div>
+            `
+        })
+    } else {
+        voterFilmSelectione.innerHTML = ``
+    }
+}
 
 // ==================================================
 // US04 - SÉLECTIONNER UNE SÉANCE
