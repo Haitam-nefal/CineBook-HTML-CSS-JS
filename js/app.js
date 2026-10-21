@@ -23,6 +23,7 @@ const voterFilmSelectione = document.getElementById("film-selectioner")
 const prixTotal = document.getElementById("prix-total")
 const seancesContainer = document.getElementById("seances-container")
 const affichageCartFilm = document.getElementById("affichage-comande-film")
+const siegesContainer = document.getElementById("sieges-container")
 
 // ==================================================
 // 0 BIS - MÉMORISER L'ÉTAT DE L'APPLICATION
@@ -94,7 +95,7 @@ createCartFilm()
 // MODÈLE : #film-details contient déjà un exemple de détail à reproduire.
 // ÉCRIVEZ VOTRE CODE ICI :
 
-// ( == 1 => == )
+// ( == 1 => )
 document.querySelectorAll(".btn-select").forEach((ele) => {
     ele.addEventListener("click", (e) => {
         e.preventDefault()
@@ -145,6 +146,7 @@ const AjouteFilmSelection = (film) => {
     SelectioneSeance.push({ filmId: film.id, data: film.seances })
     AffichageFilmsSelection()
     AffichageSeance()
+    AffichageDeSieges()
     afficheCart()
     CalculPrixTotal()
 }
@@ -153,9 +155,10 @@ const RemoveFilmSelection = (film) => {
     filmSelectiones = filmSelectiones.filter((f) => f.id != film.id)
     SelectioneSeance = SelectioneSeance.filter((f) => f.filmId != film.id)
     AffichageFilmsSelection()
+    AffichageSeance()
+    AffichageDeSieges()
     afficheCart()
     CalculPrixTotal()
-    AffichageSeance()
 }
 
 const AffichageFilmsSelection = () => {
@@ -209,6 +212,16 @@ const AffichageSeance = () => {
 
 }
 
+// ==================================================
+// US04 - SÉLECTIONNER UNE SÉANCE
+// ==================================================
+// OBJECTIF : mémoriser la séance cliquée et montrer visuellement le bouton actif.
+// NOTIONS UTILES : addEventListener, find(), classList, conditions.
+// QUESTIONS : Faut-il autoriser une séance qui n'appartient pas au film choisi ?
+// TODO : retrouver la séance, modifier l'état et réinitialiser les sièges choisis.
+// ÉCRIVEZ VOTRE CODE ICI :
+
+
 document.getElementById("seances-container").addEventListener("click", (e) => {
     if (e.target.classList.item(e.target.classList.length - 1) === "btn-select-seance") {
         e.target.classList = "rounded-xl border border-slate-300 bg-red-800 text-white px-5 py-3 font-bold btn-select-seance"
@@ -217,7 +230,7 @@ document.getElementById("seances-container").addEventListener("click", (e) => {
         console.log("seance Id : ", e.target.dataset.seanceId);
         console.log("Film Id : ", e.target.dataset.filmId);
 
-        AddSeanceId(e.target.dataset.filmId,e.target.innerHTML)
+        AddSeanceId(e.target.dataset.filmId, e.target.innerHTML)
     }
 })
 
@@ -233,15 +246,6 @@ const AddSeanceId = (idFilm, seance) => {
 }
 
 // ==================================================
-// US04 - SÉLECTIONNER UNE SÉANCE
-// ==================================================
-// OBJECTIF : mémoriser la séance cliquée et montrer visuellement le bouton actif.
-// NOTIONS UTILES : addEventListener, find(), classList, conditions.
-// QUESTIONS : Faut-il autoriser une séance qui n'appartient pas au film choisi ?
-// TODO : retrouver la séance, modifier l'état et réinitialiser les sièges choisis.
-// ÉCRIVEZ VOTRE CODE ICI :
-
-// ==================================================
 // US05 - AFFICHER LES 30 SIÈGES
 // ==================================================
 // OBJECTIF : créer les rangées A à E, avec les numéros 1 à 6.
@@ -251,6 +255,62 @@ const AddSeanceId = (idFilm, seance) => {
 // PISTE : rangees et siegesParRangee sont fournis dans data.js.
 // MODÈLE : #sieges-container contient les 30 sièges statiques et leurs classes Tailwind.
 // ÉCRIVEZ VOTRE CODE ICI :
+
+
+
+const AffichageDeSieges = () => {
+    if (filmSelectiones.length == 0) {
+        siegesContainer.innerHTML = ``
+        return
+    }
+    siegesContainer.innerHTML = ``
+    filmSelectiones.forEach((film) => {
+        siegesContainer.innerHTML += `
+        <div>
+        <h2>Film => ${film.id}</h2>
+        <div data-film-id="${film.id}" class="mx-auto mt-8 grid max-w-sm grid-cols-[1rem_repeat(6,minmax(1.75rem,2.6rem))] justify-center gap-1.5">
+        <span class="self-center text-xs font-extrabold text-slate-500">A</span><button class="aspect-square rounded-lg bg-slate-400 text-xs font-bold text-white opacity-50"
+            disabled>A1</button>
+            <button class="aspect-square rounded-lg bg-slate-400 text-xs font-bold text-white opacity-50" disabled>A2</button>
+            <button class="aspect-square rounded-lg bg-blue-600 text-xs font-bold text-white">A3</button>
+            <button class="aspect-square rounded-lg bg-blue-600 text-xs font-bold text-white">A4</button>
+            <button class="aspect-square rounded-lg bg-blue-600 text-xs font-bold text-white">A5</button>
+            <button class="aspect-square rounded-lg bg-blue-600 text-xs font-bold text-white">A6</button>
+        <span class="self-center text-xs font-extrabold text-slate-500">B</span><button
+            class="aspect-square rounded-lg bg-blue-600 text-xs font-bold text-white">B1</button><button
+            class="aspect-square rounded-lg bg-blue-600 text-xs font-bold text-white">B2</button><button
+            class="aspect-square rounded-lg bg-slate-400 text-xs font-bold text-white opacity-50"
+            disabled>B3</button><button
+            class="aspect-square rounded-lg bg-blue-600 text-xs font-bold text-white">B4</button><button
+            class="aspect-square rounded-lg bg-blue-600 text-xs font-bold text-white">B5</button><button
+            class="aspect-square rounded-lg bg-blue-600 text-xs font-bold text-white">B6</button>
+        <span class="self-center text-xs font-extrabold text-slate-500">C</span><button
+            class="aspect-square rounded-lg bg-blue-600 text-xs font-bold text-white">C1</button><button
+            class="aspect-square rounded-lg bg-cine-red text-xs font-bold text-white shadow-md">C2</button><button
+            class="aspect-square rounded-lg bg-cine-red text-xs font-bold text-white shadow-md">C3</button><button
+            class="aspect-square rounded-lg bg-blue-600 text-xs font-bold text-white">C4</button><button
+            class="aspect-square rounded-lg bg-blue-600 text-xs font-bold text-white">C5</button><button
+            class="aspect-square rounded-lg bg-blue-600 text-xs font-bold text-white">C6</button>
+        <span class="self-center text-xs font-extrabold text-slate-500">D</span><button
+            class="aspect-square rounded-lg bg-blue-600 text-xs font-bold text-white">D1</button><button
+            class="aspect-square rounded-lg bg-blue-600 text-xs font-bold text-white">D2</button><button
+            class="aspect-square rounded-lg bg-blue-600 text-xs font-bold text-white">D3</button><button
+            class="aspect-square rounded-lg bg-blue-600 text-xs font-bold text-white">D4</button><button
+            class="aspect-square rounded-lg bg-slate-400 text-xs font-bold text-white opacity-50"
+            disabled>D5</button><button
+            class="aspect-square rounded-lg bg-blue-600 text-xs font-bold text-white">D6</button>
+        <span class="self-center text-xs font-extrabold text-slate-500">E</span><button
+        class="aspect-square rounded-lg bg-blue-600 text-xs font-bold text-white">E1</button><button
+        class="aspect-square rounded-lg bg-blue-600 text-xs font-bold text-white">E2</button><button
+        class="aspect-square rounded-lg bg-blue-600 text-xs font-bold text-white">E3</button><button
+        class="aspect-square rounded-lg bg-blue-600 text-xs font-bold text-white">E4</button><button
+        class="aspect-square rounded-lg bg-blue-600 text-xs font-bold text-white">E5</button><button
+        class="aspect-square rounded-lg bg-blue-600 text-xs font-bold text-white">E6</button>
+    </div>
+        </div>
+        `
+    })
+}
 
 
 // ==================================================
