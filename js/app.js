@@ -57,7 +57,6 @@ const formateTime = (duree) => {
     return minute === 0
         ? `${hour.toFixed(0)} h`
         : `${hour.toFixed(0)} h ${minute} minute`
-
 }
 
 const createCartFilm = () => {
@@ -95,6 +94,7 @@ createCartFilm()
 // MODÈLE : #film-details contient déjà un exemple de détail à reproduire.
 // ÉCRIVEZ VOTRE CODE ICI :
 
+// ( == 1 => == )
 document.querySelectorAll(".btn-select").forEach((ele) => {
     ele.addEventListener("click", (e) => {
         e.preventDefault()
@@ -129,7 +129,19 @@ const changeButton = (button) => {
 
 
 const AjouteFilmSelection = (film) => {
-    filmSelectiones.push(film)
+    const newFilm = {
+        id: film.id,
+        titre: film.titre,
+        genre: film.genre,
+        duree: film.duree,
+        prix: film.prix,
+        affiche: film.affiche,
+        description: film.description,
+        seance: null,
+        nombre_de_sieges: null,
+        sieges: null
+    }
+    filmSelectiones.push(newFilm)
     SelectioneSeance.push({ filmId: film.id, data: film.seances })
     AffichageFilmsSelection()
     AffichageSeance()
@@ -172,27 +184,52 @@ const AffichageFilmsSelection = () => {
 
 const AffichageSeance = () => {
     if (SelectioneSeance.length > 0) {
-        console.log(SelectioneSeance);
         seancesContainer.innerHTML = ``
         SelectioneSeance.forEach((seance) => {
-
+            console.log(seance);
             const div = document.createElement("div")
             const h3 = document.createElement("h3")
-            div.classList = "border-b border-gray-300 w-full pb-3 flex justify-around items-center"
+            div.classList = "border-b border-gray-300 w-full pb-3 flex justify-around items-center btnsSelectSeance"
             h3.innerHTML = `Film :=> ${seance.filmId}`
 
             seance.data.forEach((s) => {
                 div.innerHTML += `
-                    <button type="button" data-seance-id="${s.id}" class="rounded-xl border border-slate-300 bg-slate-50 px-5 py-3 font-bold text-slate-700 btn-selection-seance">${s.horaire}</button>
+                    <button type="button" data-film-id="${seance.filmId}" data-seance-id="${s.id}" class="rounded-xl border border-slate-300 bg-slate-50 px-5 py-3 font-bold text-slate-700 btn-select-seance">${s.horaire}</button>
                 `
             })
 
             seancesContainer.appendChild(h3)
             seancesContainer.appendChild(div)
+
         })
     } else {
         seancesContainer.innerHTML = ``
     }
+    console.log(filmSelectiones);
+
+}
+
+document.getElementById("seances-container").addEventListener("click", (e) => {
+    if (e.target.classList.item(e.target.classList.length - 1) === "btn-select-seance") {
+        e.target.classList = "rounded-xl border border-slate-300 bg-red-800 text-white px-5 py-3 font-bold btn-select-seance"
+        // console.log(e.target);
+        console.log(e.target.innerHTML);
+        console.log("seance Id : ", e.target.dataset.seanceId);
+        console.log("Film Id : ", e.target.dataset.filmId);
+
+        AddSeanceId(e.target.dataset.filmId,e.target.innerHTML)
+    }
+})
+
+const AddSeanceId = (idFilm, seance) => {
+    filmSelectiones = filmSelectiones.map((film) => {
+        if (film.id == idFilm) {
+            return { ...film, seance: seance }
+        } else {
+            return film
+        }
+    })
+    afficheCart()
 }
 
 // ==================================================
@@ -203,15 +240,6 @@ const AffichageSeance = () => {
 // QUESTIONS : Faut-il autoriser une séance qui n'appartient pas au film choisi ?
 // TODO : retrouver la séance, modifier l'état et réinitialiser les sièges choisis.
 // ÉCRIVEZ VOTRE CODE ICI :
-
-
-// document.querySelectorAll("button .btn-selection-seance").forEach((ele) => {
-//     ele.addEventListener("click", (e) => {
-//         e.preventDefault()
-//         console.log(e);
-//     })
-// })
-
 
 // ==================================================
 // US05 - AFFICHER LES 30 SIÈGES
@@ -246,28 +274,31 @@ const AffichageSeance = () => {
 // ÉCRIVEZ VOTRE CODE ICI :
 
 const afficheCart = () => {
-    // affichageCartFilm.innerHTML += ``
+    if (filmSelectiones.length == 0) return affichageCartFilm.innerHTML = ``
+    console.log(filmSelectiones);
+
+    affichageCartFilm.innerHTML = ``
     filmSelectiones.forEach((film) => {
-        // affichageCartFilm.innerHTML += `
-        // <dl class="mt-7 space-y-4 text-sm py-2 border-black border-b">
-        //     <div class="flex justify-between gap-4">
-        //         <dt class="text-slate-500">Film</dt>
-        //         <dd id="recap-film" class="font-bold">${film.titre}</dd>
-        //     </div>
-        //     <div class="flex justify-between gap-4">
-        //         <dt class="text-slate-500">Séance</dt>
-        //         <dd id="recap-seance" class="font-bold">14:00</dd>
-        //     </div>
-        //     <div class="flex justify-between gap-4">
-        //         <dt class="text-slate-500">Nombre de sièges</dt>
-        //         <dd id="nombre-sieges" class="font-bold">2</dd>
-        //     </div>
-        //     <div class="flex justify-between gap-4">
-        //         <dt class="text-slate-500">Sièges</dt>
-        //         <dd id="sieges-selectionnes" class="font-bold">C2, C3</dd>
-        //     </div>
-        // </dl>
-        // `
+        affichageCartFilm.innerHTML += `
+        <dl class="mt-7 space-y-4 text-sm py-2 border-black border-b">
+            <div class="flex justify-between gap-4">
+                <dt class="text-slate-500">Film</dt>
+                <dd id="recap-film" class="font-bold">${film.titre}</dd>
+            </div>
+            <div class="flex justify-between gap-4">
+                <dt class="text-slate-500">Séance</dt>
+                <dd id="recap-seance" class="font-bold">${film.seance === null ? "Nothing" : film.seance}</dd>
+            </div>
+            <div class="flex justify-between gap-4">
+                <dt class="text-slate-500">Nombre de sièges</dt>
+                <dd id="nombre-sieges" class="font-bold">${film.nombre_de_sieges === null ? "Nothing" : film.nombre_de_sieges}</dd>
+            </div>
+            <div class="flex justify-between gap-4">
+                <dt class="text-slate-500">Sièges</dt>
+                <dd id="sieges-selectionnes" class="font-bold">${film.sieges === null ? "Nothing" : film.sieges}</dd>
+            </div>
+        </dl>
+        `
     })
 }
 
