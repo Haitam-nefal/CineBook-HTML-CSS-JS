@@ -24,6 +24,7 @@ const prixTotal = document.getElementById("prix-total")
 const seancesContainer = document.getElementById("seances-container")
 const affichageCartFilm = document.getElementById("affichage-comande-film")
 const siegesContainer = document.getElementById("sieges-container")
+const reservationMessage = document.getElementById("reservation-message")
 
 // ==================================================
 // 0 BIS - MÉMORISER L'ÉTAT DE L'APPLICATION
@@ -378,9 +379,18 @@ const CalculPrixTotal = () => {
 // ÉCRIVEZ VOTRE CODE ICI :
 
 
-document.getElementById("confirmer-reservation").addEventListener("click", (e) => {
-    e.preventDefault()
-    console.log("reservation");
+document.getElementById("confirmer-reservation").addEventListener("click", () => {
+    console.log(filmSelectiones);
+
+    reservationMessage.innerHTML = filmSelectiones.length === 0
+        ?
+        `<div class="mt-4 rounded-xl bg-red-50 text-red-700 p-3 text-sm font-medium text-center" role="status" aria-live="polite">Selectionner au moin un seul Film!</div>`
+        :
+        `<div class="mt-4 rounded-xl bg-green-50 text-green-700 p-3 text-sm font-medium text-center" role="status" aria-live="polite">Votre Reservation Est Complete !</div>`
+
+    setTimeout(() => {
+        reservationMessage.innerHTML = ``
+    }, 2500)
 })
 
 // PREMIER TEST CONSEILLÉ :
